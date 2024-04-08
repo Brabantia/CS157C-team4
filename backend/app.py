@@ -68,3 +68,5 @@ if __name__ == "__main__":
 
     if not recipe_verified:
         print("Failed to generate a verified recipe after maximum attempts.")
+
+# Left: wiil add json, coonect with flask, with react, with redis, add routers.
