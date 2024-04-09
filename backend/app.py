@@ -52,11 +52,11 @@ if __name__ == "__main__":
 
     max_attempts = 5
     attempts = 0
-    recipe_verified = True
+    recipe_verified = None
     recipe = generate_recipe(preferences)
     print(f"Generated recipe: {recipe}")
 
-    while attempts < max_attempts and recipe_verified:
+    while attempts < max_attempts:
         recipe_verified = verify_recipe(recipe)
         #print(f"Verification result: {recipe_verified}")
         attempts += 1
@@ -66,11 +66,11 @@ if __name__ == "__main__":
             break  # Exit the loop if recipe is verified
 
         else:
-            print(f"Attempt {attempts}: Recipe not verified, trying again...")
+            print(f"Attempt {attempts}: Recipe not Safe to eat, trying again...")
             continue
 
     if recipe_verified == "False":
-        print("Failed to generate a verified recipe after maximum attempts.")
+        print("Failed to generate a Safe to eat recipe,attempts exceeded. Please try again.")
 
 
 # Left: wiil add json, coonect with flask, with react, with redis, add routers.
