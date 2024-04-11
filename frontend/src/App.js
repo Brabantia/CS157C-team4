@@ -7,18 +7,8 @@ import Generate from './pages/Generate';
 
 import './App.css';
 
-
 function App() {
-  useEffect(() => {
-    fetch('/api') // proxy to our flask backend
-      .then(response => response.json())
-      .then(data => setData(data))
-      .catch(error => console.error('Error fetching data:', error));
-  }, []);
-    // maybe need tp import some data from flask to react to test Div out.
-
     return (
-      <div>
         <Router>
           <Routes>
             <Route path="/" element={<TitlePage />} />
@@ -28,14 +18,6 @@ function App() {
             <Route path='/generate' element={<Generate />} />
           </Routes>
         </Router>
-        <div>
-          <h1>Hello, React!</h1>
-          <p>Data from Flask: {JSON.stringify(data)}</p>
-          <div className="App">
-            <RecipeForm />
-          </div>
-        </div>
-      </div>
     );
 }
 
