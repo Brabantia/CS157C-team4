@@ -6,7 +6,8 @@ import key
 
 def generate_recipe(preferences):
     # Initialize OpenAI client
-    client = OpenAI(api_key=os.environ.get(key.openai_key))
+    openai_key=key.openai_key
+    client = OpenAI(api_key=openai_key)
 
     # Send request to OpenAI for recipe generation
     stream = client.chat.completions.create(
@@ -78,6 +79,9 @@ if __name__ == "__main__":
 
     if recipe_verified == "False":
         print("Failed to generate a verified recipe after maximum attempts.")
+
+
+
 
 
 
