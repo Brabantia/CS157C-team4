@@ -6,6 +6,42 @@ const LoginPage = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
+
+  const [emailExists, setEmailExists] = useState(true);
+  const [wrongCredentials, setwrongCredentials] = useState(false);
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    const user = {
+      email: email,
+      password: password,
+    };
+    console.log(user);
+    fetch("http://127.0.0.1:5000/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(user),
+    })
+      .then((response) => response.json())
+      .then((userAccount) => {
+        setEmailExists(true);
+        setwrongCredentials(false);
+        if (userAccount.status === 200) {
+          console.log(userAccount.message);
+          navigate("/home");
+        } else if (userAccount.status == 201) {
+          console.log(userAccount.message);
+          setEmailExists(false);
+        } else if (userAccount.status == 202) {
+          console.log(userAccount.message);
+          setwrongCredentials(true);
+        } else {
+          console.log(userAccount.message);
+        }
+      })
+      .catch((error) => console.log(error));
+  };
+
   return (
     <div>
       <nav className="bg-[#229EA3]">
@@ -14,7 +50,6 @@ const LoginPage = () => {
               Culinary Craft AI
             </span>
           </a>
-  
       </nav>
       <div className="flex items-center flex-col justify-center h-screen w-full bg-[#229EA3]">
         <div className="w-full bg-white rounded-lg shadow-md md:mt-0 max-w-fit xl:p-0">
@@ -51,7 +86,27 @@ const LoginPage = () => {
                 />
               </div>
             </form>
-            <Button className="mt-2 font-Montserrat text-2xl bg-[#000088] rounded-full w-96">
+            {!emailExists && (
+              <div
+                className="flex items-center p-4 mb-3 text-red-900 rounded-lg bg-red-100 w-96"
+                role="alert"
+              >
+                <div className="text-md">
+                  <b>Login Failed - Email doesn't Exist!</b>
+                </div>
+              </div>
+            )}
+            {wrongCredentials && (
+              <div
+                className="flex items-center p-4 mb-3 text-red-900 rounded-lg bg-red-100 w-96"
+                role="alert"
+              >
+                <div className="text-md">
+                  <b>Login Failed - Invalid Password!</b>
+                </div>
+              </div>
+            )}
+            <Button className="mt-2 font-Montserrat text-2xl bg-[#000088] rounded-full w-96" onClick={handleSubmit}>
               LOGIN
             </Button>
           </div>

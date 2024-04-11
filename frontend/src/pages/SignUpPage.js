@@ -8,6 +8,39 @@ const SignUpPage = () => {
   const [lastName, setLastName] = useState();
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
+
+  const [emailExists, setEmailExists] = useState(false);
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    const user = {
+      firstName: firstName,
+      lastName: lastName,
+      email: email,
+      password: password,
+    };
+    console.log(user);
+    fetch("http://127.0.0.1:5000/newUser", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(user),
+    })
+      .then((response) => response.json())
+      .then((newUser) => {
+        console.log(newUser);
+        if (newUser.status === 200) {
+          console.log(newUser.message);
+          navigate("/login");
+        } else if (newUser.status == 201) {
+          console.log(newUser.message);
+          setEmailExists(true);
+        } else {
+          console.log(newUser.message);
+        }
+      })
+      .catch((error) => console.log(error));
+  };
+
   return (
     <div>
       <nav className="bg-[#229EA3]">
@@ -81,7 +114,20 @@ const SignUpPage = () => {
                 />
               </div>
             </form>
-            <Button className="mt-2 font-Montserrat text-2xl bg-[#000088] rounded-full w-96">
+            {emailExists && (
+              <div
+                className="flex items-center p-4 mb-3 text-red-900 rounded-lg bg-red-100 w-96"
+                role="alert"
+              >
+                <div className="text-md">
+                  <b>Registration Failed - Email Already Exists!</b>
+                </div>
+              </div>
+            )}
+            <Button
+              className="mt-2 font-Montserrat text-2xl bg-[#000088] rounded-full w-96"
+              onClick={handleSubmit}
+            >
               CREATE NEW ACCOUNT
             </Button>
           </div>
