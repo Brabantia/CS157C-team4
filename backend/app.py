@@ -1,16 +1,19 @@
 from openai import OpenAI
+import google.generativeai as genai
 import os
+import key 
 
-# Initialize OpenAI client
-client = OpenAI(api_key=os.environ.get("secret"))
 
 def generate_recipe(preferences):
+    # Initialize OpenAI client
+    client = OpenAI(api_key=os.environ.get(key.openai_key))
+
     # Send request to OpenAI for recipe generation
     stream = client.chat.completions.create(
         messages=[
             {
                 "role": "user",
-                "content": f"Generate an unedible recipe based on these preferences: {preferences}.",
+                "content": f"Generate an edible recipe based on these preferences: {preferences}. Also, make the prompt in JSON format with under 400 words that has 4 section: title (name of recipe), cuisine (veg /non-veg), ingredients (in one line only) and instruction (in paragraphs)",
             }
         ],
         model="gpt-3.5-turbo",
@@ -26,26 +29,30 @@ def generate_recipe(preferences):
     return recipe.strip()
 
 
+
 def verify_recipe(recipe):
-   # Send request to OpenAI for recipe generation
-   stream = client.chat.completions.create(
-       messages=[
-           {
-               "role": "user",
-                              "content": f"I have this recipe: {recipe}. Is it edible? Reply True or False.",
-           }
-       ],
-       model="gpt-3.5-turbo",
-       stream=True,
-   )
 
-   # Iterate through stream and concatenate response chunks
-   recipe_ver = ""
-   for chunk in stream:
-       recipe_ver += chunk.choices[0].delta.content or ""
+  genai.configure(api_key=key.gemini_key)
 
-   # Return generated recipe
-   return recipe_ver.strip()
+  # Set up the model
+  generation_config = {
+    "temperature": 0.9,
+    "top_p": 1,
+    "top_k": 1,
+    "max_output_tokens": 2048,
+  }
+
+ 
+
+  model = genai.GenerativeModel(model_name="gemini-1.0-pro",
+                                generation_config=generation_config)
+
+  convo = model.start_chat()
+  verify = "This is a recipe that i made out of thin air:" + recipe +  "Reply in one word, Is it edible, True or False?"
+  convo.send_message(verify)
+
+  return convo.last.text
+
 
 if __name__ == "__main__":
     preferences = input("Enter your preferences: ")
@@ -66,11 +73,13 @@ if __name__ == "__main__":
             break  # Exit the loop if recipe is verified
 
         else:
-            print(f"Attempt {attempts}: Recipe not Safe to eat, trying again...")
+            print(f"Attempt {attempts}: Recipe not verified, trying again...")
             continue
 
     if recipe_verified == "False":
-        print("Failed to generate a Safe to eat recipe,attempts exceeded. Please try again.")
+        print("Failed to generate a verified recipe after maximum attempts.")
+
+
 
 
 # Left: wiil add json, coonect with flask, with react, with redis, add routers.
