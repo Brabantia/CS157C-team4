@@ -31,7 +31,7 @@ const SignUpPage = () => {
         if (newUser.status === 200) {
           console.log(newUser.message);
           navigate("/login");
-        } else if (newUser.status == 201) {
+        } else if (newUser.status === 201) {
           console.log(newUser.message);
           setEmailExists(true);
         } else {
@@ -43,106 +43,108 @@ const SignUpPage = () => {
 
   return (
     <div>
-      <nav className="bg-[#229EA3]">
-        <a href="/" class="flex items-center space-x-2 rtl:space-x-reverse">
-          <span class="self-center text-3xl font-semibold ml-[20px] mt-[25px] text-white">
+      <nav className="bg-teal-500">
+        <a href="/" className="flex items-center space-x-2 rtl:space-x-reverse">
+          <span className="self-center text-3xl font-semibold ml-[200px] mt-[25px] text-white">
             Culinary Craft AI
           </span>
         </a>
       </nav>
-      <div className="flex items-center flex-col justify-center h-screen w-full bg-[#229EA3]">
-        <div className="w-full bg-white rounded-lg shadow-md md:mt-0 max-w-fit xl:p-0">
-          <div className="flex flex-col items-center justify-center border px-9 py-8 rounded-md">
-            <form>
-              <div className="flex flex-col">
-                <h2 className="text-5xl text-center mb-8 mt-3">
-                  <b>Sign Up</b>
-                </h2>
-                <label
-                  for="firstName"
-                  className="block mb-1 text-md text-black"
-                >
-                  First Name:{" "}
+  
+      <div className="flex items-center justify-center min-h-screen bg-teal-500">
+        <div className="flex flex-col md:flex-row bg-white rounded-xl shadow-lg max-w-4xl mx-auto overflow-hidden">
+          {/* Left Side Panel */}
+          <div className="flex flex-col justify-center p-8 md:p-12 md:w-1/2">
+            <h2 className="text-3xl font-bold text-gray-800 mb-5">Sign Up</h2>
+            <form className="space-y-5">
+              <div>
+                <label htmlFor="firstName" className="text-md font-medium text-gray-700 block mb-1">
+                  First Name:
                 </label>
                 <input
                   type="text"
                   id="firstName"
-                  className="mb-5 bg-gray-50 border border-black text-black text-md focus:border-[#000088] focus:outline p-2.5 w-96"
+                  className="w-full p-3 border border-gray-200 rounded-lg focus:ring-1 focus:ring-blue-500 focus:outline-none"
                   placeholder="ex. John"
-                  onChange={(event) => {
-                    setFirstName(event.target.value);
-                  }}
                   required
+                  onChange={(event) => setFirstName(event.target.value)}
                 />
-                <label for="lastName" className="block mb-1 text-md text-black">
-                  Last Name:{" "}
+              </div>
+              <div>
+                <label htmlFor="lastName" className="text-md font-medium text-gray-700 block mb-1">
+                  Last Name:
                 </label>
                 <input
                   type="text"
                   id="lastName"
-                  className="mb-5 bg-gray-50 border border-black text-black text-md focus:border-[#000088] focus:outline p-2.5 w-96"
+                  className="w-full p-3 border border-gray-200 rounded-lg focus:ring-1 focus:ring-blue-500 focus:outline-none"
                   placeholder="ex. Smith"
                   required
-                  onChange={(event) => {
-                    setLastName(event.target.value);
-                  }}
+                  onChange={(event) => setLastName(event.target.value)}
                 />
-                <label for="email" className="block mb-1 text-md text-black">
-                  Email:{" "}
+              </div>
+              <div>
+                <label htmlFor="email" className="text-md font-medium text-gray-700 block mb-1">
+                  Email:
                 </label>
                 <input
                   type="email"
                   id="email"
-                  class="mb-5 bg-gray-50 border border-black text-black text-md focus:border-[#000088] focus:outline p-2.5 w-96"
-                  placeholder="ex. john.smith@gmail.com"
+                  className="w-full p-3 border border-gray-200 rounded-lg focus:ring-1 focus:ring-blue-500 focus:outline-none"
+                  placeholder="ex. john.smith@example.com"
                   required
-                  onChange={(event) => {
-                    setEmail(event.target.value);
-                  }}
+                  onChange={(event) => setEmail(event.target.value)}
                 />
-                <label for="password" className="block mb-1 text-md text-black">
-                  Password:{" "}
+              </div>
+              <div>
+                <label htmlFor="password" className="text-md font-medium text-gray-700 block mb-1">
+                  Password:
                 </label>
                 <input
                   type="password"
                   id="password"
-                  class="mb-5 bg-gray-50 border border-black text-black text-md focus:border-[#000088] focus:outline p-2.5 w-96"
+                  className="w-full p-3 border border-gray-200 rounded-lg focus:ring-1 focus:ring-blue-500 focus:outline-none"
                   required
-                  onChange={(event) => {
-                    setPassword(event.target.value);
-                  }}
+                  onChange={(event) => setPassword(event.target.value)}
                 />
               </div>
-            </form>
-            {emailExists && (
-              <div
-                className="flex items-center p-4 mb-3 text-red-900 rounded-lg bg-red-100 w-96"
-                role="alert"
-              >
-                <div className="text-md">
-                  <b>Registration Failed - Email Already Exists!</b>
+              {emailExists && (
+                <div className="flex items-center p-4 text-red-700 bg-red-200 rounded-md"
+                role="alert">
+                  <span className="text-md">
+                    <b>Registration Failed - Email Already Exists!</b>
+                  </span>
                 </div>
-              </div>
-            )}
-            <Button
-              className="mt-2 font-Montserrat text-2xl bg-[#000088] rounded-full w-96"
-              onClick={handleSubmit}
-            >
-              CREATE NEW ACCOUNT
-            </Button>
+              )}
+              <button className="w-full bg-[#000088] text-white p-3 rounded-lg text-lg transition-colors duration-200 ease-in-out hover:bg-blue-600"
+                onClick={handleSubmit}>
+                Create New Account
+              </button>
+            </form>
+            <p className="text-sm mt-6 text-center text-gray-700">
+              Already have an Account?{" "}
+              <a
+                href="/login"
+                className="font-bold text-[#000088] hover:underline"
+              >
+                Login!
+              </a>
+            </p>
+          </div>
+          {/* Right Side - Image Panel */}
+          <div className="relative md:w-1/2">
+            <img className="object-cover w-full h-full" src="https://images.unsplash.com/photo-1558985212-324add95595a?q=80&w=2574&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" />
+            <div className="absolute bottom-8 right-4 p-5 bg-white bg-opacity-50 backdrop-blur-md rounded-lg shadow">
+              <span className="text-lg font-medium text-gray-850">
+                Rest assured, <br/>
+                  All recipes generated on this site are carefully curated to ensure they are safe and edible for your enjoyment.
+              </span>
+            </div>
           </div>
         </div>
-        <p class="text-sm mt-3 font-light text-black-500 py-3">
-          Already have an account?{" "}
-          <a
-            href="/login"
-            class="font-medium text-primary-600 hover:font-bold text-[#000088]"
-          >
-            Login Here!
-          </a>
-        </p>
       </div>
     </div>
   );
-};
-export default SignUpPage;
+}
+  export default SignUpPage;
+  

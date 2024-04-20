@@ -10,7 +10,7 @@ const TitlePage = () => {
     navigate("/signup");
   };
   return (
-    <div className="flex items-center flex-col justify-center h-screen w-full bg-[#229EA3]">
+    <div className="flex items-center flex-col justify-center h-screen w-full bg-teal-500">
       <h1 className="text-8xl text-center mb-2 text-white">
         <b>CULINARY CRAFT AI!</b>
       </h1>

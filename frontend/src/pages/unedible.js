@@ -2,7 +2,8 @@ import React from 'react';
 import { Button } from '@material-tailwind/react';
 import { useNavigate } from 'react-router-dom';
 
-const Generate = () => {
+const Unedible = () => {
+
     const navigate = useNavigate();
 
   
@@ -14,10 +15,9 @@ const Generate = () => {
         console.log("Logging out...");
         navigate('/login');
     };
-
-    
+  
     return (
-        <div > 
+        <div>
             <nav className="bg-teal-500 p-6 flex justify-between items-center">
                 <a href="/" className="flex items-center space-x-2 rtl:space-x-reverse">
                     <span className="self-center text-3xl font-semibold ml-[200px] text-white">
@@ -33,10 +33,9 @@ const Generate = () => {
                     </Button>
             </div>
             </nav>   
-
             <div className="min-h-screen  bg-teal-500 flex flex-col justify-center">
             <div className="bg-white p-12 rounded-lg shadow-lg mx-auto my-10 max-w-4xl w-full min-h-[600px]">
-                <h2 className="text-3xl font-semibold mb-6 text-gray-800">Create Your Custom Recipe</h2>
+                <h2 className="text-3xl font-semibold mb-6 text-gray-800">Testing Model's Safety</h2>
                 <form className="grid gap-6">
                     <div>
                         <label className="text-1xl font-bold text-gray-700">
@@ -53,7 +52,7 @@ const Generate = () => {
                             Ingredients:
                             <input 
                                 type="text" 
-                                placeholder="e.g., tomatoes, chicken, pasta" 
+                                placeholder="Testing area" 
                                 className="mt-1 block w-full p-5 border border-gray-300 rounded-md"
                             />
                         </label>
@@ -69,7 +68,7 @@ const Generate = () => {
                         </label>
                     </div>
                     <Button type="submit" className="text-2xl w-full py-4 bg-teal-600 text-white rounded-md cursor-pointer hover:bg-[#000088] transition duration-100">
-                        Generate Recipe
+                        Test-Generated Recipe Model
                     </Button>
                 </form>
             </div>
@@ -78,4 +77,4 @@ const Generate = () => {
     );
 }
 
-export default Generate;
+export default Unedible;

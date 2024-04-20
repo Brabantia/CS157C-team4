@@ -1,89 +1,92 @@
-import { useState } from "react";
-//import { useParams } from "react-router-dom";
-import styled from "styled-components";
+import React, { useState } from 'react';
+import { Button } from '@material-tailwind/react';
+import { useNavigate } from 'react-router-dom';
 
 const Instructions = () => {
-  //let params = useParams();
+
   const [details] = useState({
-    title: "Sample Recipe",
+    title: "Same image Recipes",
     image: "https://via.placeholder.com/100",
     instructions: "<li>Step 1: Mix </li><li>Step 2: Bake</li>",
     extendedIngredients: [
-      { id: 1, original: "1 ingeredient" },
-      { id: 2, original: "2 cup" },
-      { id: 3, original: "1 choclate" }
+      { id: 1, original: "1 ingredient, maybe add more" },
+      { id: 2, original: "2 cups" },
+      { id: 3, original: "1 chocolate" }
     ]
   });
   const [activeTab, setActiveTab] = useState("instructions");
+  const navigate = useNavigate();
+
+  const handleReGenerate = () => {
+      console.log("Re-generating recipe...");
+  };
+
+  const handleHome = () => {
+      navigate('/recipes');
+  };
+
+  const handleLogOut = () => {
+      console.log("Logging out...");
+      navigate('/login');
+  };
 
   return (
-    <DetailWrapper>
-      <div style={{ flex: 1 }}>
-        <h2>{details.title}</h2>
-        <img src={details.image} alt={details.title} />
-      </div>
-      <Info>
-        <Button
-          className={activeTab === "instructions" ? "active" : ""}
-          onClick={() => setActiveTab("instructions")}
-        >
-          Instructions
-        </Button>
-        <Button
-          className={activeTab === "ingredients" ? "active" : ""}
-          onClick={() => setActiveTab("ingredients")}
-        >
-          Ingredients
-        </Button>
-        {activeTab === "instructions" && (
-          <div style={{ marginTop: 30 }}>
-            <ol dangerouslySetInnerHTML={{ __html: details.instructions }}></ol>
+    <div className="flex flex-col min-h-screen bg-teal-500">
+      <nav className="bg-teal-500 p-6 flex justify-between items-center">
+          <a href="/" className="flex items-center space-x-2 rtl:space-x-reverse">
+              <span className="self-center text-3xl font-semibold ml-[200px] text-white">
+                  Culinary Craft AI
+              </span>
+          </a>
+          <div>
+              <Button onClick={handleHome} className="text-xl py-2 px-4 bg-white text-teal-500 rounded-md cursor-pointer hover:bg-teal-200 transition duration-150">
+                  Home
+              </Button>
+              <Button onClick={handleReGenerate} className="text-xl py-2 px-4 ml-4 bg-white text-teal-500 rounded-md cursor-pointer hover:bg-teal-200 transition duration-150">
+                  Generate
+              </Button>
+              <Button onClick={handleLogOut} className="text-xl py-2 px-4 ml-4 bg-white text-teal-500 rounded-md cursor-pointer hover:bg-teal-200 transition duration-150">
+                  Log Out
+              </Button>
           </div>
-        )}
-        {activeTab === "ingredients" && (
-          <ol style={{ marginTop: 30 }}>
-            {details.extendedIngredients.map((ingredient) => (
-              <li key={ingredient.id}>{ingredient.original}</li>
-            ))}
-          </ol>
-        )}
-      </Info>
-    </DetailWrapper>
+      </nav>
+    <div className="flex min-h-screen bg-teal-500 items-center justify-center p-10">
+      <div className="flex flex-wrap bg-white rounded-lg shadow-lg w-full max-w-1xl min-h-[100vh] p-8">
+        <div className="w-full md:w-1/2 p-5">
+          <h2 className="text-2xl font-bold mb-4">{details.title}</h2>
+          <img src='https://images.unsplash.com/photo-1495521821757-a1efb6729352?q=80&w=1626&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' alt={details.title} className="max-w-full h-auto rounded-md"/>
+        </div>
+        <div className="w-full md:w-1/2 p-5">
+          <button
+            className={`text-lg p-2 rounded ${activeTab === "instructions" ? "bg-teal-500 text-white" : "bg-white text-gray-700 border border-gray-400"}`}
+            onClick={() => setActiveTab("instructions")}
+          >
+            Instructions
+          </button>
+          <button
+            className={`text-lg p-2 rounded ml-4 ${activeTab === "ingredients" ? "bg-teal-500 text-white" : "bg-white text-gray-700 border border-gray-400"}`}
+            onClick={() => setActiveTab("ingredients")}
+          >
+            Ingredients
+          </button>
+          {activeTab === "instructions" && (
+            <div className="mt-5">
+              <ol dangerouslySetInnerHTML={{ __html: details.instructions }} className="list-decimal pl-5"></ol>
+            </div>
+          )}
+          {activeTab === "ingredients" && (
+            <ol className="list-decimal pl-5 mt-5">
+              {details.extendedIngredients.map((ingredient) => (
+                <li key={ingredient.id} className="text-lg leading-loose">{ingredient.original}</li>
+              ))}
+            </ol>
+          )}
+        </div>
+      </div>
+    </div>
+    </div>
+
   );
 };
-
-const DetailWrapper = styled.div`
-  margin-top: 10rem;
-  margin-bottom: 5rem;
-  display: flex;
-  gap: 5rem;
-  .active {
-    background: #282c34;
-    color: white;
-  }
-  h2 {
-    margin-bottom: 2rem;
-  }
-  li {
-    font-size: 1.2rem;
-    line-height: 2.5rem;
-  }
-  ul {
-    margin-top: 2rem;
-  }
-`;
-
-const Button = styled.button`
-  padding: 1rem 2rem;
-  color: #313131;
-  background: white;
-  border: 2px solid black;
-  margin-right: 2rem;
-  font-weight: 600;
-`;
-
-const Info = styled.div`
-  flex: 1;
-`;
 
 export default Instructions;
