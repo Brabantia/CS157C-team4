@@ -1,7 +1,9 @@
+from verification.verify import generate_recipe, verify_recipe
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import redis
 from flask_bcrypt import bcrypt
+import json
 
 app = Flask(__name__)
 CORS(app)
@@ -51,13 +53,66 @@ def newUser():
                 "password": password_hash,
                 },
             )
-        print(r.hgetall( "user:" + email))
+        print(r.hgetall("user:" + email))
         return jsonify({ 'message': 'User Added Successfully: ' + email, 'status': 200 })
        else:
         return jsonify({ 'message': 'Email already Exists: ' + email, 'status': 201 })
-
     except Exception as e:
         return jsonify({'error': str(e)})
+
+@app.route('/users', methods=['GET'])
+def users():
+   try:
+        users = {}
+        emails = r.smembers("user:emails")
+        print(emails)
+        for email in emails:
+            user_data = r.hgetall("user:" + email)
+            users[email] = user_data 
+        return jsonify(users)   
+   except Exception as e:
+        return jsonify({'error': str(e)})
+      
+@app.route('/generate', methods=['POST'])
+def generateRecipe():
+   try:
+   
+    body = request.get_json()
+    recipe_type = body.get('recipeType')
+    ingredients = body.get('ingredients')
+    cuisine_type = body.get('cuisineType')
     
+    recipe = generate_recipe(ingredients)
+    
+    attempts = 0
+    max_attempts = 2
+
+    while attempts < max_attempts:
+        recipe_verified = verify_recipe(recipe)
+        attempts += 1
+        if recipe_verified  == "True":
+            formatted_recipe = json.loads(recipe)
+            newRecipe = r.hset(
+            "recipes:", # TO-DO: add user email to get the recipes of specific user
+            mapping = {
+                "title": formatted_recipe["title"],
+                "recipe_type": formatted_recipe["cuisine"], # changed to recipe type
+                "ingredients": formatted_recipe["ingredients"],
+                "instructions": formatted_recipe["instructions"],
+                },
+            )
+            print(r.hgetall("recipes:"))
+            return jsonify({ 'message': 'Success', 'status': 200, 'recipe': formatted_recipe, 'verify': recipe_verified})
+        elif recipe == "UNSAFE":
+            return jsonify({ 'message': 'You Entered an UNSAFE Substance - Please Try Again.', 'status': 201, 'verify': recipe_verified})
+        else:
+            recipe = generate_recipe(ingredients)
+            continue
+    if recipe_verified == "False":
+        return jsonify({ 'message': 'Failed to generate recipe', 'status': 202, 'verify': recipe_verified})
+
+   except Exception as e:
+        return jsonify({'error': str(e)})
+
 if __name__ == '__main__':
     app.run(debug=True)

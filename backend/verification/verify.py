@@ -1,7 +1,9 @@
 from openai import OpenAI
 import google.generativeai as genai
 import os
-import key 
+import verification.key as key 
+# import key as key 
+
 
 
 def generate_recipe(preferences):
@@ -14,7 +16,7 @@ def generate_recipe(preferences):
         messages=[
             {
                 "role": "user",
-                "content": f"Generate an edible recipe based on these preferences: {preferences}. Also, make the prompt in JSON format with under 400 words that has 4 section: title (name of recipe), cuisine (veg /non-veg), ingredients (in one line only) and instruction (in paragraphs)",
+                "content": f"Generate a recipe based on these preferences: {preferences}. If any unsafe substance like metal or aluminium or something similar is included, reply with UNSAFE in one word, else: Provide the recipe in JSON format with under 400 words, including 4 sections: title (recipe name), cuisine (veg / non-veg), ingredients (one-line list), and instructions (paragraphs).",
             }
         ],
         model="gpt-3.5-turbo",
@@ -58,32 +60,26 @@ def verify_recipe(recipe):
 if __name__ == "__main__":
     preferences = input("Enter your preferences: ")
 
-    max_attempts = 5
+    max_attempts = 2
     attempts = 0
-    recipe_verified = None
+    # recipe_verified = None
     recipe = generate_recipe(preferences)
-    print(f"Generated recipe: {recipe}")
-
     while attempts < max_attempts:
+        print(f"Generated recipe: {recipe}")
         recipe_verified = verify_recipe(recipe)
-        #print(f"Verification result: {recipe_verified}")
+        print(f"Verification result: {recipe_verified}")
         attempts += 1
         if recipe_verified  == "True":
             print("Recipe has been verified. It's a Safe.")
-         #   print(recipe_verified)  # Print recipe_ver here # not working
+            print(recipe_verified)  # Print recipe_ver here # not working
             break  # Exit the loop if recipe is verified
+        elif recipe == "UNSAFE":
+            print("You have entered unsafe substance in your form. Please try again.")
 
         else:
             print(f"Attempt {attempts}: Recipe not verified, trying again...")
+            recipe = generate_recipe(preferences)
             continue
 
     if recipe_verified == "False":
         print("Failed to generate a verified recipe after maximum attempts.")
-
-
-
-
-
-
-
-# Left: wiil add json, coonect with flask, with react, with redis, add routers.
