@@ -1,12 +1,13 @@
+import sys #added for script
 from openai import OpenAI
 import google.generativeai as genai
 import os
 import verification.key as key 
-# import key as key 
+#import key as key 
 
 
 
-def generate_recipe(preferences):
+def generate_recipe(recipe_type, ingredients, cuisine_type):
     # Initialize OpenAI client
     openai_key=key.openai_key
     client = OpenAI(api_key=openai_key)
@@ -16,7 +17,7 @@ def generate_recipe(preferences):
         messages=[
             {
                 "role": "user",
-                "content": f"Generate a recipe based on these preferences: {preferences}. If any unsafe substance like metal or aluminium or something similar is included, reply with UNSAFE in one word, else: Provide the recipe in JSON format with under 400 words, including 4 sections: title (recipe name), cuisine (veg / non-veg), ingredients (one-line list), and instructions (paragraphs).",
+                "content": f"Generate a recipe based Recipe type: {recipe_type} , ingredients: {ingredients} , cuisine type: {cuisine_type}. If any unsafe substance like metal or aluminium or something similar is included, reply with UNSAFE in one word, else: Provide the recipe in JSON format with under 400 words, including 4 sections: title (recipe name), cuisine (veg / non-veg), ingredients (one-line list), and instructions (paragraphs).",
             }
         ],
         model="gpt-3.5-turbo",
@@ -56,14 +57,53 @@ def verify_recipe(recipe):
 
   return convo.last.text
 
+def unedible_generate_recipe(recipe_type, ingredients, cuisine_type):
+    # Initialize OpenAI client
+    openai_key=key.openai_key
+    client = OpenAI(api_key=openai_key)
+
+    # Send request to OpenAI for recipe generation
+    stream = client.chat.completions.create(
+        messages=[
+            {
+                "role": "user",
+                "content": f"Generate UNEDIBLE recipe based on Recipe type: {recipe_type} , ingredients: {ingredients} , cuisine type: {cuisine_type} , Provide the recipe in JSON format with under 400 words, including 4 sections: title (recipe name), cuisine (veg / non-veg), ingredients (one-line list), and instructions (paragraphs).",
+            }
+        ],
+        model="gpt-3.5-turbo",
+        stream=True,
+    )
+
+    # Iterate through stream and concatenate response chunks
+    recipe = ""
+    for chunk in stream:
+        recipe += chunk.choices[0].delta.content or ""
+
+    # Return generated recipe
+    return recipe.strip()
+
 
 if __name__ == "__main__":
-    preferences = input("Enter your preferences: ")
+
+    recipe_type = input("Enter Recipe Type (vegetarian/non-vegetarian): ")
+    ingredients = input("Enter Ingredients (comma-separated): ")
+    cuisine_type = input("Enter Cuisine Type (e.g., Italian, Chinese): ")
+
+
+
+    # Will trigger unedible testing funation only when we at specific URL
+    if len(sys.argv) > 1 and sys.argv[1] == "/unedible_URL":
+        recipe_function = unedible_generate_recipe
+    else:
+        recipe_function = generate_recipe
+
+
+
 
     max_attempts = 2
     attempts = 0
     # recipe_verified = None
-    recipe = generate_recipe(preferences)
+    recipe = recipe_function(recipe_type, ingredients, cuisine_type)
     while attempts < max_attempts:
         print(f"Generated recipe: {recipe}")
         recipe_verified = verify_recipe(recipe)
@@ -78,7 +118,7 @@ if __name__ == "__main__":
 
         else:
             print(f"Attempt {attempts}: Recipe not verified, trying again...")
-            recipe = generate_recipe(preferences)
+            recipe = generate_recipe(recipe_type, ingredients, cuisine_type)
             continue
 
     if recipe_verified == "False":
