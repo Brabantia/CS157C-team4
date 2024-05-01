@@ -81,8 +81,10 @@ def generateRecipe():
     recipe_type = body.get('recipeType')
     ingredients = body.get('ingredients')
     cuisine_type = body.get('cuisineType')
+    user_email = body.get('userEmail')
     
-    recipe = generate_recipe(ingredients)
+    recipe = generate_recipe(recipe_type, ingredients, cuisine_type)
+    print(recipe)
     
     attempts = 0
     max_attempts = 2
@@ -93,7 +95,7 @@ def generateRecipe():
         if recipe_verified  == "True":
             formatted_recipe = json.loads(recipe)
             newRecipe = r.hset(
-            "recipes:", # TO-DO: add user email to get the recipes of specific user
+            "recipes:" + user_email,
             mapping = {
                 "title": formatted_recipe["title"],
                 "recipe_type": formatted_recipe["cuisine"], # changed to recipe type
@@ -101,7 +103,7 @@ def generateRecipe():
                 "instructions": formatted_recipe["instructions"],
                 },
             )
-            print(r.hgetall("recipes:"))
+            print(r.hgetall("recipes:" + user_email))
             return jsonify({ 'message': 'Success', 'status': 200, 'recipe': formatted_recipe, 'verify': recipe_verified})
         elif recipe == "UNSAFE":
             return jsonify({ 'message': 'You Entered an UNSAFE Substance - Please Try Again.', 'status': 201, 'verify': recipe_verified})

@@ -1,7 +1,7 @@
 import React from "react";
 import { Button } from "@material-tailwind/react";
-import { useNavigate, useSearchParams } from "react-router-dom";
-import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
 import Cookies from "js-cookie";
 
 const Generate = () => {
@@ -11,19 +11,28 @@ const Generate = () => {
     Cookies.remove("auth");
     navigate("/");
   };
-
+  const [userEmail, setUserEmail] = useState();
   const [recipeType, setRecipeType] = useState();
   const [ingredients, setIngredients] = useState();
   const [cuisineType, setCuisineType] = useState();
 
   const [unsafe, setUnsafe] = useState(false);
 
+  useEffect(() => {
+    if (Cookies.get("auth")) {
+      const authCookie = Cookies.get("auth");
+      const emailFromCookie = JSON.parse(authCookie).user_email;
+      setUserEmail(emailFromCookie);
+    }
+  }, []);
+
   const handleGenerate = (event) => {
     event.preventDefault();
     const generateInfo = {
         recipeType: recipeType,
         ingredients: ingredients,
-        cuisineType: cuisineType
+        cuisineType: cuisineType,
+        userEmail: userEmail
     };
     console.log(generateInfo);
     fetch("http://127.0.0.1:5000/generate", {
