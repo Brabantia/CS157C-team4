@@ -25,7 +25,7 @@ def login():
         storedPassword = r.hget('user:' + email, "password")
 
         if (bcrypt.checkpw(password.encode('utf-8'), storedPassword.encode('utf-8'))):
-            return jsonify({ 'message': 'Login Successful: ' + email, 'status': 200 })
+            return jsonify({ 'message': 'Login Successful: ' + email, 'status': 200, 'email': email})
         else:
             return jsonify({ 'message': 'Login Failed - Incorrect Password: ' + email, 'status': 202 })
        else:

@@ -2,9 +2,15 @@ import React from "react";
 import { Button } from "@material-tailwind/react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useState } from "react";
+import Cookies from "js-cookie";
 
 const Generate = () => {
   const navigate = useNavigate();
+
+  const handleLogout = () => {
+    Cookies.remove("auth");
+    navigate("/");
+  };
 
   const [recipeType, setRecipeType] = useState();
   const [ingredients, setIngredients] = useState();
@@ -66,7 +72,7 @@ const Generate = () => {
             Generate Recipes
           </Button>
           <Button
-            onClick={() => navigate("/")}
+            onClick={handleLogout}
             style={{ "font-family": "Montserrat, sans-serif" }}
             className="text-xl py-2 px-4 ml-4 bg-white text-[#229EA3] rounded-md cursor-pointer hover:bg-teal-50  transition duration-150"
           >

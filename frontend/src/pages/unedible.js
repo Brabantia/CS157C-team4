@@ -1,6 +1,7 @@
 import React from 'react';
 import { Button } from '@material-tailwind/react';
 import { useNavigate } from 'react-router-dom';
+import Cookies from "js-cookie";
 
 const Unedible = () => {
 
@@ -11,9 +12,9 @@ const Unedible = () => {
         navigate('/recipes');
     };
   
-    const handleLogOut = () => {
-        console.log("Logging out...");
-        navigate('/login');
+    const handleLogout = () => {
+        Cookies.remove("auth");
+        navigate("/");
     };
   
     return (
@@ -28,7 +29,7 @@ const Unedible = () => {
                     <Button onClick={handleHome} className="text-xl py-2 px-4 bg-white text-teal-500 rounded-md cursor-pointer hover:bg-teal-200 transition duration-150">
                         Home
                     </Button>
-                    <Button onClick={handleLogOut} className="text-xl py-2 px-4 ml-4 bg-white text-teal-500 rounded-md cursor-pointer hover:bg-teal-200 transition duration-150">
+                    <Button onClick={handleLogout} className="text-xl py-2 px-4 ml-4 bg-white text-teal-500 rounded-md cursor-pointer hover:bg-teal-200 transition duration-150">
                         Log Out
                     </Button>
             </div>
