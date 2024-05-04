@@ -76,7 +76,6 @@ def users():
 @app.route('/generate', methods=['POST'])
 def generateRecipe():
    try:
-   
     body = request.get_json()
     recipe_type = body.get('recipeType')
     ingredients = body.get('ingredients')
@@ -84,7 +83,6 @@ def generateRecipe():
     user_email = body.get('userEmail')
     
     recipe = generate_recipe(recipe_type, ingredients, cuisine_type)
-    print(recipe)
     
     attempts = 0
     max_attempts = 2
@@ -94,8 +92,21 @@ def generateRecipe():
         attempts += 1
         if recipe_verified  == "True":
             formatted_recipe = json.loads(recipe)
+
+            if (r.hget("recipes:" + user_email, "count") == None):
+                count = r.hset("recipes:" + user_email,
+                    mapping = {
+                        "count": 1
+                    },
+                )
+            else:
+               r.hincrby("recipes:" + user_email, "count", 1)
+            
+            recipeCount = r.hget("recipes:" + user_email, "count")
+            print(recipeCount)
+
             newRecipe = r.hset(
-            "recipes:" + user_email,
+            "recipes:" + user_email + ":" + recipeCount,
             mapping = {
                 "title": formatted_recipe["title"],
                 "recipe_type": formatted_recipe["cuisine"], # changed to recipe type
@@ -103,8 +114,8 @@ def generateRecipe():
                 "instructions": formatted_recipe["instructions"],
                 },
             )
-            print(r.hgetall("recipes:" + user_email))
-            return jsonify({ 'message': 'Success', 'status': 200, 'recipe': formatted_recipe, 'verify': recipe_verified})
+            print(r.hgetall("recipes:" + user_email + ":" + recipeCount))
+            return jsonify({ 'message': 'Success', 'status': 200, 'recipe': formatted_recipe, 'recipeCount': recipeCount, 'verify': recipe_verified})
         elif recipe == "UNSAFE":
             return jsonify({ 'message': 'You Entered an UNSAFE Substance - Please Try Again.', 'status': 201, 'verify': recipe_verified})
         else:
@@ -114,6 +125,23 @@ def generateRecipe():
         return jsonify({ 'message': 'Failed to generate recipe', 'status': 202, 'verify': recipe_verified})
 
    except Exception as e:
+        return jsonify({'error': str(e)})
+
+@app.route('/get_user_recipes', methods=['GET'])
+def getUserRecipes():
+    try:
+        email = request.args.get('userEmail') 
+        recipeCount = r.hget("recipes:" + email, "count")
+        recipes = []
+        print(email)
+        for userR in range(int(recipeCount)):
+            recipeInfo = r.hgetall("recipes:" + email + ":" + str(userR + 1))
+            recipes.append(recipeInfo)
+
+        #print(recipes)
+        return jsonify({'recipes': recipes})
+
+    except Exception as e:
         return jsonify({'error': str(e)})
 
 if __name__ == '__main__':
