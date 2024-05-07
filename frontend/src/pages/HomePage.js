@@ -1,16 +1,30 @@
 import { Button } from "@material-tailwind/react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import Cookies from "js-cookie";
 
 const HomePage = () => {
   const navigate = useNavigate();
+  const [userEmail, setUserEmail] = useState();
   const [userRecipes, setUserRecipes] = useState();
+
+  const handleNavigate = (recipe) => {
+    navigate("/instructions", {
+      state: {
+        title: recipe.title,
+        ingredients: recipe.ingredients,
+        instructions: recipe.instructions,
+      },
+    });
+  };
 
   useEffect(() => {
     const authCookie = Cookies.get("auth");
-    if (!authCookie) {
+    if (Cookies.get("auth")) {
+      const emailFromCookie = JSON.parse(authCookie).user_email;
+      setUserEmail(emailFromCookie);
+    } else if (!authCookie) {
       console.error("Authentication cookie is missing");
       return;
     }
@@ -29,6 +43,36 @@ const HomePage = () => {
       })
       .catch((error) => console.error("Error fetching data:", error));
   }, []);
+
+  const handleDelete = (index, title) => {
+    const deleteUserRecipe = {
+      index: index,
+      email: userEmail,
+      recipeTitle: title,
+    };
+    console.log(deleteUserRecipe);
+    fetch("http://127.0.0.1:5000/delete_user_recipe", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(deleteUserRecipe),
+    })
+      .then((response) => response.json())
+      .then((deleteRecipe) => {
+        console.log(deleteRecipe)
+        if (deleteRecipe.status === 200) {
+          console.log(deleteRecipe.message);
+          window.location.reload(); 
+        } else {
+          console.log(deleteRecipe.message);
+        }
+      })
+      .catch((error) => console.log(error));
+  };
+
+  const handleLogout = () => {
+    Cookies.remove("auth");
+    navigate("/");
+  };
 
   return (
     <div>
@@ -54,7 +98,7 @@ const HomePage = () => {
             Generate Recipes
           </Button>
           <Button
-            onClick={() => navigate("/")}
+            onClick={() => navigate(handleLogout)}
             style={{ "font-family": "Montserrat, sans-serif" }}
             className="text-xl py-2 px-4 ml-4 bg-white text-[#229EA3] rounded-md cursor-pointer hover:bg-teal-50  transition duration-150"
           >
@@ -81,7 +125,7 @@ const HomePage = () => {
                 key={index}
                 className="bg-white rounded-xl overflow-hidden shadow-lg"
               >
-                <Link to={`/Instructions`}>
+                <button className="" onClick={() => handleNavigate(recipe)}>
                   <img
                     src={
                       "https://images.unsplash.com/photo-1542010589005-d1eacc3918f2?q=80&w=1784&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
@@ -89,10 +133,17 @@ const HomePage = () => {
                     alt={recipe.title}
                     className="w-full h-64 object-cover"
                   />
-                  <h4 className="text-center text-lg font-semibold py-4">
+                  <h4 className="text-center text-2xl font-semibold py-4">
                     {recipe.title}
                   </h4>
-                </Link>
+                </button>
+                <Button
+                  onClick={() => handleDelete(index, recipe.title)}
+                  style={{ "font-family": "Montserrat, sans-serif" }}
+                  className="text-sm mt-2 mb-3 py-2 px-4 bg-[#229EA3] rounded-md cursor-pointer mx-auto flex justify-center items-center hover:bg-teal-200 transition duration-150"
+                >
+                  Delete Recipe
+                </Button>
               </div>
             ))}
         </motion.div>

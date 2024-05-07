@@ -90,7 +90,7 @@ def generateRecipe():
     while attempts < max_attempts:
         recipe_verified = verify_recipe(recipe)
         attempts += 1
-        if recipe_verified  == "True":
+        if recipe_verified == "True":
             formatted_recipe = json.loads(recipe)
 
             if (r.hget("recipes:" + user_email, "count") == None):
@@ -104,7 +104,6 @@ def generateRecipe():
             
             recipeCount = r.hget("recipes:" + user_email, "count")
             print(recipeCount)
-
             newRecipe = r.hset(
             "recipes:" + user_email + ":" + recipeCount,
             mapping = {
@@ -137,9 +136,40 @@ def getUserRecipes():
         for userR in range(int(recipeCount)):
             recipeInfo = r.hgetall("recipes:" + email + ":" + str(userR + 1))
             recipes.append(recipeInfo)
-
         #print(recipes)
         return jsonify({'recipes': recipes})
+
+    except Exception as e:
+        return jsonify({'error': str(e)})
+
+@app.route('/delete_user_recipe', methods=['POST'])
+def deleteUserRecipe():
+    try:
+        body = request.get_json()
+        recipe_index = body.get('index')
+        user_email = body.get('email')
+        recipe_title = body.get('recipeTitle')
+       
+        recipeCount = r.hget("recipes:" + user_email, "count")
+        recipeDeleteTitle = r.hget("recipes:" + user_email + ":" + str(recipe_index + 1), "title")
+        
+        changedKeys = False
+        if (recipeDeleteTitle == recipe_title):
+            r.delete("recipes:" + user_email + ":" + str(recipe_index + 1))
+            r.hincrby("recipes:" + user_email, "count", -1)
+            for userR in range((int(recipe_index) + 1), int(recipeCount)):
+                recipeInfo = r.hgetall("recipes:" + user_email + ":" + str(userR + 1))
+                recipeChange = r.hmset("recipes:" + user_email + ":" + str(userR), recipeInfo)
+                changedKeys = True
+            
+            lastValue = int(recipeCount)
+            print(lastValue)
+            if (changedKeys):
+                r.delete("recipes:" + user_email + ":" + str(lastValue))
+            
+            return jsonify({'status': 200, 'message': 'Deleted Recipe Successfully: ' + recipe_title,})
+        else:
+            return jsonify({'message': 'Error Deleting Recipe: ' + recipe_title,})
 
     except Exception as e:
         return jsonify({'error': str(e)})
