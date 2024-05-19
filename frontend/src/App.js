@@ -4,10 +4,10 @@ import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import SignUpPage from './pages/SignUpPage';
 import Generate from './pages/Generate';
-import Recipes from './pages/Recipes'
 import Instructions from './pages/Instructions'
 import Unedible from './pages/unedible';
-import Results from './pages/Results'
+import Results from './pages/Results';
+import Profile from './pages/UserProfile';
 import './App.css'; //not needed
 
 function App() {
@@ -20,10 +20,9 @@ function App() {
           <Route path='/home' element={<HomePage />} />
           <Route path='/generate' element={<Generate />} />
           <Route path='/instructions' element={<Instructions />} />
-          <Route path='/recipes' element={<Recipes />} />
           <Route path='/unedible' element={<Unedible />} />
           <Route path='/results' element={<Results />} />
-
+          <Route path='/profile' element={<Profile />} />
         </Routes>
       </Router>
   );

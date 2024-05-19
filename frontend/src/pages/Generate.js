@@ -51,7 +51,7 @@ const Generate = () => {
         } else if (generateRecipe.status === 202) {
             console.log(generateRecipe.message);
         } else {
-            console.log(generateRecipe.message);
+            console.log(generateRecipe);
         }
       })
       .catch((error) => console.log(error));
@@ -81,6 +81,13 @@ const Generate = () => {
             Generate Recipes
           </Button>
           <Button
+            onClick={() => navigate("/profile")}
+            style={{ "font-family": "Montserrat, sans-serif" }}
+            className="text-xl py-2 px-4 ml-4 bg-white text-[#229EA3] rounded-md cursor-pointer hover:bg-teal-50 transition duration-150"
+          >
+            Profile
+          </Button>
+          <Button
             onClick={handleLogout}
             style={{ "font-family": "Montserrat, sans-serif" }}
             className="text-xl py-2 px-4 ml-4 bg-white text-[#229EA3] rounded-md cursor-pointer hover:bg-teal-50  transition duration-150"
@@ -91,7 +98,7 @@ const Generate = () => {
       </nav>
 
       <div
-        className="min-h-screen  bg-[#229EA3] flex flex-col justify-center"
+        className="h-screen  bg-[#229EA3] flex flex-col justify-center"
         style={{ "font-family": "Montserrat, sans-serif" }}
       >
         <div className="bg-white p-12 rounded-lg shadow-lg mx-auto my-10 max-w-4xl w-full ">

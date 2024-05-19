@@ -8,11 +8,16 @@ const LoginPage = () => {
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
 
+  const [emptyFields, setEmptyFields] = useState(false);
   const [emailExists, setEmailExists] = useState(true);
   const [wrongCredentials, setwrongCredentials] = useState(false);
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    setEmptyFields(false);
+    if (!email || !password) {
+      setEmptyFields(true);
+    }
     const user = {
       email: email,
       password: password,
@@ -53,13 +58,14 @@ const LoginPage = () => {
 
   return (
     <div>
-      <nav className="bg-teal-500">
-        <a href="/" class="flex items-center space-x-2 rtl:space-x-reverse">
-          <span class="self-center text-3xl font-semibold ml-[200px] mt-[25px] text-white">
+      <nav className="bg-teal-500 p-6 flex justify-between items-center">
+        <a href="/" className="flex items-center space-x-2 rtl:space-x-reverse">
+          <span className="self-center text-3xl font-semibold ml-[25px] mt-20px text-white">
             Culinary Craft AI
           </span>
         </a>
       </nav>
+  
 
       <div className="flex items-center justify-center min-h-screen bg-teal-500">
         <div className="flex flex-col md:flex-row bg-white rounded-xl shadow-lg max-w-4xl mx-auto overflow-hidden">
@@ -105,7 +111,7 @@ const LoginPage = () => {
               </div>
               {!emailExists && (
                 <div
-                  className="flex items-center p-4 text-red-700 bg-red-200 rounded-md"
+                  className="flex items-center p-4 text-red-700 bg-red-100 rounded-md"
                   role="alert"
                 >
                   <span className="text-md">
@@ -115,11 +121,21 @@ const LoginPage = () => {
               )}
               {wrongCredentials && (
                 <div
-                  className="flex items-center p-4 text-red-700 bg-red-200 rounded-md"
+                  className="flex items-center p-4 text-red-700 bg-red-100 rounded-md"
                   role="alert"
                 >
                   <span className="text-md">
                     <b>Login Failed - Invalid Password!</b>
+                  </span>
+                </div>
+              )}
+              {emptyFields && (
+                <div
+                  className="flex items-center p-4 text-red-700 bg-red-100 rounded-md"
+                  role="alert"
+                >
+                  <span className="text-md">
+                    <b>Error - Please Complete All Fields!</b>
                   </span>
                 </div>
               )}

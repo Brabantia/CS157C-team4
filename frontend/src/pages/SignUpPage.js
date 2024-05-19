@@ -11,14 +11,38 @@ const SignUpPage = () => {
 
   const [emailExists, setEmailExists] = useState(false);
 
+  const [error, setError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState();
+
   const handleSubmit = (event) => {
     event.preventDefault();
+    setError(false);
+    setErrorMessage("");
+    if (!firstName || !lastName || !email || !password) {
+      setError(true);
+      setErrorMessage("Error - Please Complete All Fields!");
+      return;
+    } 
+
+    if (!email.includes('@')) {
+      setError(true);
+      setErrorMessage('Error - Invalid Email Address!');
+      return;
+    }
+
+    if (password.length < 8) {
+      setError(true);
+      setErrorMessage('Error - Password Must Be at Least 8 Characters!');
+      return;
+    } 
+   
     const user = {
       firstName: firstName,
       lastName: lastName,
       email: email,
       password: password,
     };
+
     console.log(user);
     fetch("http://127.0.0.1:5000/newUser", {
       method: "POST",
@@ -33,7 +57,8 @@ const SignUpPage = () => {
           navigate("/login");
         } else if (newUser.status === 201) {
           console.log(newUser.message);
-          setEmailExists(true);
+          setError(true);
+          setErrorMessage("Registration Failed - Email Already Exists!");
         } else {
           console.log(newUser.message);
         }
@@ -43,9 +68,9 @@ const SignUpPage = () => {
 
   return (
     <div>
-      <nav className="bg-teal-500">
+      <nav className="bg-teal-500 p-6 flex justify-between items-center">
         <a href="/" className="flex items-center space-x-2 rtl:space-x-reverse">
-          <span className="self-center text-3xl font-semibold ml-[200px] mt-[25px] text-white">
+          <span className="self-center text-3xl font-semibold ml-[25px] mt-20px text-white">
             Culinary Craft AI
           </span>
         </a>
@@ -108,14 +133,15 @@ const SignUpPage = () => {
                   onChange={(event) => setPassword(event.target.value)}
                 />
               </div>
-              {emailExists && (
-                <div className="flex items-center p-4 text-red-700 bg-red-200 rounded-md"
+              {error && (
+                <div className="flex items-center p-4 text-red-700 bg-red-100 rounded-md"
                 role="alert">
                   <span className="text-md">
-                    <b>Registration Failed - Email Already Exists!</b>
+                    <b>{errorMessage}</b>
                   </span>
                 </div>
               )}
+              
               <button className="w-full bg-[#000088] text-white p-3 rounded-lg text-lg transition-colors duration-200 ease-in-out hover:bg-blue-600"
                 onClick={handleSubmit}>
                 Create New Account

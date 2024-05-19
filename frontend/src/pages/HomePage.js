@@ -98,7 +98,14 @@ const HomePage = () => {
             Generate Recipes
           </Button>
           <Button
-            onClick={() => navigate(handleLogout)}
+            onClick={() => navigate("/profile")}
+            style={{ "font-family": "Montserrat, sans-serif" }}
+            className="text-xl py-2 px-4 ml-4 bg-white text-[#229EA3] rounded-md cursor-pointer hover:bg-teal-50 transition duration-150"
+          >
+            Profile
+          </Button>
+          <Button
+            onClick={handleLogout}
             style={{ "font-family": "Montserrat, sans-serif" }}
             className="text-xl py-2 px-4 ml-4 bg-white text-[#229EA3] rounded-md cursor-pointer hover:bg-teal-50  transition duration-150"
           >
@@ -107,7 +114,7 @@ const HomePage = () => {
         </div>
       </nav>
 
-      <div className="flex items-center flex-col h-screen w-full bg-[#229EA3]">
+      <div className="flex items-center flex-col w-full bg-[#229EA3]">
         <h1 className="text-6xl mt-20 text-white">
           <b>Your Recipes</b>
         </h1>
