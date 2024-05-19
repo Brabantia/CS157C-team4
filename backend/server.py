@@ -72,6 +72,43 @@ def users():
         return jsonify(users)   
    except Exception as e:
         return jsonify({'error': str(e)})
+   
+@app.route('/get_user', methods=['GET'])
+def get_user():
+    try:
+        email = request.args.get('userEmail') 
+        user_data = r.hgetall("user:" + email)
+        return jsonify(user_data)   
+    except Exception as e:
+        return jsonify({'error': str(e)})
+
+@app.route('/update_password', methods=['POST'])
+def update_password():
+    try:
+       body = request.get_json()
+       email = body.get('email')
+       password = body.get('password')
+       new_password = body.get('new_password')
+       if(r.sismember("user:emails", email) == 1):
+        storedPassword = r.hget('user:' + email, "password")
+        if (bcrypt.checkpw(password.encode('utf-8'), storedPassword.encode('utf-8'))):
+            password_hash = bcrypt.hashpw(new_password.encode('utf-8'), bcrypt.gensalt())
+            if (password == new_password):
+                return jsonify({'message': 'Same Password', 'status': 203})
+            newUser = r.hset(
+            "user:" + email,
+            mapping = {
+                "password": password_hash,
+                },
+            )
+            print(r.hgetall("user:" + email))
+            return jsonify({'message': 'Update Successful: ' + email, 'status': 200, 'email': email})
+        else: 
+            return jsonify({'message': 'Old Password Incorrect', 'status': 202})
+       else:
+        return jsonify({'message': 'Update Failed - No Account Exists: ' + email, 'status': 201})
+    except Exception as e:
+        return jsonify({'error': str(e)})
       
 @app.route('/generate', methods=['POST'])
 def generateRecipe():

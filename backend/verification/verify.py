@@ -17,7 +17,7 @@ def generate_recipe(recipe_type, ingredients, cuisine_type):
         messages=[
             {
                 "role": "user",
-                "content": f"Generate a recipe based Recipe type: {recipe_type} , ingredients: {ingredients} , cuisine type: {cuisine_type}. If any unsafe substance like metal or aluminium or something similar is included, reply with UNSAFE in one word, else: Provide the recipe in JSON format with under 400 words, including 4 sections: title (recipe name), cuisine (veg / non-veg), ingredients (one-line list), and instructions (paragraphs).",
+                "content": f"Generate a recipe based on the following parameters: Recipe type: {recipe_type}, ingredients: {ingredients}, and cuisine type: {cuisine_type}. If the input includes any unsafe substances such as metal or aluminum, or conflicting ingredients like 'veg and chicken', respond with 'UNSAFE'. Otherwise, provide the recipe in JSON format, limited to 400 words. The recipe should include four sections: title (recipe name), cuisine (categorized as veg or non-veg), ingredients (formatted as a one-line list), and instructions (written in paragraphs).",
             }
         ],
         model="gpt-3.5-turbo",
