@@ -17,6 +17,7 @@ const Generate = () => {
   const [cuisineType, setCuisineType] = useState();
 
   const [unsafe, setUnsafe] = useState(false);
+  const [empty, setEmpty] = useState(false);
 
   useEffect(() => {
     if (Cookies.get("auth")) {
@@ -28,6 +29,9 @@ const Generate = () => {
 
   const handleGenerate = (event) => {
     event.preventDefault();
+    if (!recipeType || !ingredients || !cuisineType) {
+      setEmpty(true);
+    }
     const generateInfo = {
         recipeType: recipeType,
         ingredients: ingredients,
@@ -144,6 +148,14 @@ const Generate = () => {
              role="alert">
                <span className="text-md">
                  <b>You Entered an UNSAFE Substance - Please Try Again!</b>
+               </span>
+             </div>
+           )}
+           {empty && (
+             <div className="flex items-center p-4 text-red-700 bg-red-100 rounded-md"
+             role="alert">
+               <span className="text-md">
+                 <b>Error - Please Complete All Fields!</b>
                </span>
              </div>
            )}

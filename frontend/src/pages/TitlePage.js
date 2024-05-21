@@ -12,10 +12,10 @@ const TitlePage = () => {
   return (
     <div className="flex items-center flex-col justify-center h-screen w-full bg-teal-500">
       <h1 className="text-8xl text-center mb-2 text-white">
-        <b>CULINARY CRAFT AI!</b>
+        <b>CULINARY CRAFT AI</b>
       </h1>
       <h2 className="text-5xl mb-20 text-white text-center">
-        Generate, Create, and Save Recipes
+        Generate, Verify, and Save Recipes
       </h2>
       <Button
         className="font-Montserrat text-2xl bg-[#000088] rounded-full w-96 mb-3"
