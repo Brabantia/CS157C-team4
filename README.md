@@ -9,4 +9,5 @@
 <img width="847" alt="Screenshot Instructions" src="https://github.com/Brabantia/CS157C-team4/assets/20603692/29c20936-609b-48d2-be6a-47c0683bec5e">
 <br> **Initial brainstorming idea:** <br>
 <img width="383" alt="Initial brainstorming idea" src="https://github.com/Brabantia/CS157C-team4/assets/20603692/591bafd9-f1c4-45e3-b86f-7b53716955a0"> <br>
+**In-Progress:** <br>
 Trying to deploy the website using aws, but have to figure out the backend deployment first using flask + redis. 
